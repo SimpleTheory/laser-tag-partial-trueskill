@@ -1,0 +1,14 @@
+Write tests for:
+    weighted events
+    multiplayer contests
+    game contexts
+
+Write documentation:
+    Function docs
+    Test docs
+    readme
+
+Write example use
+
+Publish to pypi
+Publish to read the docs

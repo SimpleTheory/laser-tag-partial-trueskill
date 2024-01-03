@@ -2,4 +2,4 @@
 Contributors
 ============
 
-* Ari Frid <arigfrid@hotmail.com>
+* Ari Frid <admin@ari.moe>

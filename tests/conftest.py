@@ -1,5 +1,5 @@
 """
-    Dummy conftest.py for laser_tag_partial_trueskill.
+    Dummy conftest.py for laser_tag.
 
     If you don't know what this is for, just leave it empty.
     Read more about conftest.py under:

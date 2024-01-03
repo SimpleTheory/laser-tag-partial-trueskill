@@ -1,12 +1,12 @@
 """
-    Setup file for laser_tag_partial_trueskill.
+    Setup file for laser_tag.
     Use setup.cfg to configure your project.
 
     This file was generated with PyScaffold 4.4.
     PyScaffold helps you to put up the scaffold of your new Python project.
     Learn more under: https://pyscaffold.org/
 """
-from setuptools import setup
+from setuptools import setup, find_packages
 
 if __name__ == "__main__":
     try:

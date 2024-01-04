@@ -50,6 +50,9 @@ def test_winner_new_mean_for_half_weight_event():
 
 def test_loser_new_mean_for_half_weight_event():
     assert round(standard_mean_update(loser, test_event_half_weight), 7) == round(1400 - (1400 - (standard_mean_update(loser, test_event)))/2, 7)
+    loser_copy = copy.copy(loser)
+    loser_copy.update_mean(test_event_half_weight)
+    assert round(loser_copy.mean, 7) == round(1400 - (1400 - (standard_mean_update(loser, test_event)))/2, 7)
 
 
 def test_winner_new_variance_for_half_weight_event():

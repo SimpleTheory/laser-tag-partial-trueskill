@@ -1,4 +1,5 @@
 import abc
+import copy
 import inspect
 import math
 from dataclasses import dataclass
@@ -101,12 +102,17 @@ class RateableTotality(Rating):
         return sum([rating.sigma_variance_for_std_dev() for rating in self.ratings])
 
     def update_mean(self, event, won_or_lost=None):
+        won_or_lost = event.direction_of_weight(self)
         for rating in self.ratings:
-            rating.update_mean(event, event.direction_of_weight(self))
+            rating.update_mean(event, won_or_lost)
 
     def update_variance(self, event):
         for rating in self.ratings:
             rating.update_variance(event)
+
+    def __copy__(self):
+        # Warning: Ratings cannot contain themselves
+        return RateableTotality(self.name, [copy.copy(rating) for rating in self.ratings])
 
 
 @dataclass

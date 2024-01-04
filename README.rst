@@ -64,7 +64,10 @@ The different kinds of Rating objects in this module are:
 - ``RateableTotality``: A rating that is made up of other ratings, like a `team`.
 
 You could of course elect to make your own Rating objects with the ``Rating Interface`` if none of these suit your needs.
-As for events there is only a single event class, of which if you wish to see the detail please head over to the `docs <>`_, the `source <>`_, or the `tests <>`_.
+As for events there is only a single event class, of which if you wish to see the detail please head over to the
+`docs <>`_,
+the `source <https://github.com/SimpleTheory/laser-tag-partial-trueskill/tree/master/src/partial_trueskill>`_,
+or the `tests <https://github.com/SimpleTheory/laser-tag-partial-trueskill/tree/master/tests/partial_trueskill>`_.
 
 
 .. _pyscaffold-notes:

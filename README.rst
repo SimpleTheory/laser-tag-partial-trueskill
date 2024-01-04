@@ -30,14 +30,41 @@
 |
 
 ===========================
-laser_tag_partial_trueskill
+Partial Trueskill
 ===========================
 
 
-    Add a short description here!
+    Open source python implementation of Justin Dastous, `Expanding the TrueSkill Algorithm Using In-Game Events`.
 
+Philosophy of the Paper
+------------------------
 
-A longer description of your project goes here...
+The idea of the paper is to amend the TrueSkill rating system primarily by doing 2 things:
+
+1. Instead of wins and losses use game events as partial wins and losses to record skill in games with many player substitutions.
+2. Create ghost players that amend the ELO difference given certain circumstances to more accurately reflect skill, or to reflect skill given specific circumstances.
+
+   - For example a ghost player can be used to represent the amount of "win probability" added with a home field advantage. This player can be trained over time until they reach a consistent
+     rating after which they can be set and added to all relevant games to the home team.
+
+   - A second example would be identifying a player's skill given different playing conditions, like a tennis player playing on clay vs cement.
+     In this case the player can have a general rating and a clay rating when they play on clay to track both separately and predict the win/matchmake more accurately.
+
+More detail can be found in the `paper <https://uwaterloo.ca/computational-mathematics/sites/ca.computational-mathematics/files/uploads/files/justin_dastous_research_paper.pdf>`_.
+
+Implementation
+---------------
+This repo implements the paper using ``Rating`` and ``Event`` objects. The rating objects are anything that could have a
+rating (following a Rating interface), whereas the event objects are the specific events used to determine the ratings for these objects.
+
+The different kinds of Rating objects in this module are:
+
+- ``SkillBasedRating``: A simple rating like a player, or a player on clay.
+- ``ConstantRating``: A rating that can be set if desired and no longer change, like `home field advantage`.
+- ``RateableTotality``: A rating that is made up of other ratings, like a `team`.
+
+You could of course elect to make your own Rating objects with the ``Rating Interface`` if none of these suit your needs.
+As for events there is only a single event class, of which if you wish to see the detail please head over to the `docs <>`_, the `source <>`_, or the `tests <>`_.
 
 
 .. _pyscaffold-notes:

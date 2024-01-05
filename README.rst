@@ -65,12 +65,41 @@ The different kinds of Rating objects in this module are:
 
 You could of course elect to make your own Rating objects with the ``Rating Interface`` if none of these suit your needs.
 As for events there is only a single event class, of which if you wish to see the detail please head over to the
-`docs <>`_,
+`docs <https://laser-tag-partial-trueskill.readthedocs.io/en/latest/index.html>`_,
 the `source <https://github.com/SimpleTheory/laser-tag-partial-trueskill/tree/master/src/partial_trueskill>`_,
 or the `tests <https://github.com/SimpleTheory/laser-tag-partial-trueskill/tree/master/tests/partial_trueskill>`_.
 
+Usage
+------
+Please keep in mind that these numbers are made up please calibrate the system to your needs. Additionally, though not shown in the example,
+you can include these objects into your own classes for even more versatility.
+::
 
-.. _pyscaffold-notes:
+   winner = RateableTotality(
+       'winner',
+       [
+           SkillBasedRating(mean=1100, variance=120),
+           SkillBasedRating(mean=1600, variance=150),
+           ConstantRating(mean=1400, variance=40, is_set=False),
+           ConstantRating(mean=1200, variance=40, is_set=True),
+           ConstantRating(mean=1000, variance=0, is_set=True),
+       ]
+   )
+   loser = RateableTotality(
+       'loser',
+       [
+           SkillBasedRating(mean=1000, variance=110),
+           SkillBasedRating(mean=1300, variance=130),
+           ConstantRating(mean=1100, variance=40, is_set=False),
+           ConstantRating(mean=1300, variance=40, is_set=True),
+           ConstantRating(mean=1500, variance=0, is_set=True),
+       ]
+   )
+   game_parameters = Parameters(200, 20)
+   game_event = Event(1/3, winner, loser, game_parameters, 'shot attempt')
+
+   winner.update_mean_and_variance(game_event)
+   loser.update_mean_and_variance(game_event)
 
 Note
 ====

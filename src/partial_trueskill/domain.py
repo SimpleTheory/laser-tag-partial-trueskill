@@ -6,9 +6,16 @@ from dataclasses import dataclass
 import typing
 import statistics
 
+normal_dist = statistics.NormalDist()
+
 
 @dataclass(frozen=True)
 class Parameters:
+    """
+    Parameters beta and tau to use for any specific event. These parameters are immutable.
+    `static_performance_spread = beta`
+    `constant_additional_variance = tau`
+    """
     static_performance_spread: float
     constant_additional_variance: float
 
@@ -117,11 +124,20 @@ class RateableTotality(Rating):
 
 @dataclass
 class Event:
+    """
+    The idea of an event is that it takes a winner and a loser which it calculates all the necessary variables given the weight
+    for the ratings to update themselves. The ``weight`` param MUST BE 0 < weight <= 1! Events also have a name so that you can
+    identify them if need be.
+
+    Once instantiated the properties derived off the initial parameters are immutable.
+    IF YOU CHANGE ANY OF THE ATTRIBUTES THE CALCULATIONS WILL NOT UPDATE! In this case it's better to instantiate a new
+    object using ``copy_with``.
+    """
     weight: float  # MUST BE 0 < weight <= 1!
-    name: str
     winner: Rating
     loser: Rating
     parameters: Parameters
+    name: str = ''
 
     def __post_init__(self):
         """
@@ -144,8 +160,9 @@ class Event:
 
     # <editor-fold desc="C">
     def _std_dev_of_performances(self) -> float:
-        # sqrt(beta_count*beta**2 + sum(variance**2 for all variances)
-        # :return: V
+        """
+        Takes formula for `c` at the end of pg12
+        """
         return math.sqrt(
             ((self.winner.beta_count + self.loser.beta_count) * self.parameters.static_performance_spread ** 2)
             + self.winner.sigma_variance_for_std_dev() + self.loser.sigma_variance_for_std_dev()
@@ -170,9 +187,9 @@ class Event:
 
     # <editor-fold desc="V">
     def _mean_scale(self) -> float:
-        # z_factor = delta/std-dev
-        # pdf(z_factor)/cdf(z_factor)
-        normal_dist = statistics.NormalDist()
+        """
+        Formula for `v` pg4
+        """
         return normal_dist.pdf(self.z_factor) / normal_dist.cdf(self.z_factor)
 
     @property
@@ -185,6 +202,9 @@ class Event:
 
     # <editor-fold desc="W">
     def _variance_scale(self) -> float:
+        """
+        Formula for `w` pg4
+        """
         return self.v * (self.v + self.z_factor)
 
     @property
@@ -205,10 +225,19 @@ class Event:
             return 1
         return -1
 
+    def copy_with(self, weight=None, winner=None, loser=None, parameters=None, name=None):
+        return Event(
+            self.weight if weight is None else weight,
+            self.winner if winner is None else winner,
+            self.loser if loser is None else loser,
+            self.parameters if parameters is None else parameters,
+            self.name if name is None else name,
+        )
+
 
 def standard_mean_update(rating: Rating, event: Event, won_or_lost: typing.Literal[1, -1, None] = None) -> float:
     """
-
+    Uses formula from pg11 `mu_new`. This function does not modify any objects passed by reference.
     :param rating: Rating to update (not in place returns new mean as float)
     :param event: The event which the rating object played which will change its rating
     :param won_or_lost: Whether the rating object won or lost (MUST BE `1, -1 or None`)
@@ -223,6 +252,13 @@ def standard_mean_update(rating: Rating, event: Event, won_or_lost: typing.Liter
 
 
 def standard_variance_update(rating: Rating, event: Event) -> float:
+    """
+    Uses formula from pg11 `sigma_new**2` except since we want sigma and not sigma**2, we also take the sqrt of the final
+    answer. This function does not modify any objects passed by reference.
+    :param rating: Rating object to return new variance from
+    :param event: Event from which the variance should be updated
+    :return: Result of new variance
+    """
     tau_sqr = event.parameters.constant_additional_variance ** 2
     variance_sqr = rating.variance ** 2
     new_variance_sqr = (variance_sqr + tau_sqr) * (1 - abs(event.weight) * (
@@ -235,10 +271,3 @@ def standard_variance_update(rating: Rating, event: Event) -> float:
 
 def name_of_func_in_scope():
     return inspect.stack()[1][3]
-
-
-if __name__ == '__main__':
-    winner = SkillBasedRating(mean=1200, variance=150)
-    loser = SkillBasedRating(mean=1400, variance=40)
-    test_parameters = Parameters(200, 0)
-    test_event = Event(1, 'test event', winner, loser, test_parameters)

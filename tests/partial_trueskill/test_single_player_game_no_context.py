@@ -4,8 +4,8 @@ from partial_trueskill.domain import *
 winner = SkillBasedRating(mean=1200, variance=150)
 loser = SkillBasedRating(mean=1400, variance=40)
 test_parameters = Parameters(200, 0)
-test_event = Event(1, 'test event', winner, loser, test_parameters)
-test_event_half_weight = Event(.5, 'test event', winner, loser, test_parameters)
+test_event = Event(1,  winner, loser, test_parameters, name='test event')
+test_event_half_weight = Event(.5, winner, loser, test_parameters, name='test event half weight')
 
 
 def test_delta():
@@ -73,3 +73,9 @@ def test_loser_new_variance_for_half_weight_event():
     \sqrt{40^{2}\left(1-.5\cdot0.75028418897755\frac{40^{2}}{322.64531609803356^{2}}\right)}
     """
     assert round(standard_variance_update(loser, test_event_half_weight), 7) == 39.8845158
+
+def test_event_copy_with_same():
+    assert test_event.copy_with() == test_event
+
+def test_event_copy_with_diff():
+    assert test_event.copy_with(name='new') == Event(1,  winner, loser, test_parameters, name='new')

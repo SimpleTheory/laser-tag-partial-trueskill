@@ -22,8 +22,8 @@ loser = RateableTotality(
     ]
 )
 test_parameters = Parameters(200, 20)
-test_event = Event(1/3, 'test event', winner, loser, test_parameters)
-test_half_weight_event = Event(1 / 2, 'test event', winner, loser, test_parameters)
+test_event = Event(1/3, winner, loser, test_parameters, 'test event 1/3')
+test_half_weight_event = Event(1 / 2, winner, loser, test_parameters, 'test event 1/2')
 
 
 def test_delta():

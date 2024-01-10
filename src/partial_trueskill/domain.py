@@ -28,12 +28,6 @@ class Parameters:
 
 # noinspection PyStatementEffect
 class Rating(abc.ABC):
-    """
-    Must have:
-    mean: float
-    variance: float
-    beta_count: int
-    """
     mean: float
     variance: float
     beta_count: int
@@ -44,7 +38,6 @@ class Rating(abc.ABC):
     def update_mean_and_variance(self, event: 'Event'):
         """
         This order is required because the old variance is used in both calculations whereas the old mean is only used in `update_mean`.
-        :return:
         """
         self.update_mean(event)
         self.update_variance(event)
